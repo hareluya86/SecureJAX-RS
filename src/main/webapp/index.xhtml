@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:jsf="http://xmlns.jcp.org/jsf">
+    <head>
+        <title>Secure JAX-RS endpoint</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
+
+    </head>
+    <body>
+        <div class="container">
+            <h:form id="FormLogin">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>This is the test app to secure your JAX-RS endpoints</h1>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="additional_message" class="alert"></div>
+                    </div>
+                </div>
+                <div class="row" jsf:rendered="#{User.authenticated}">
+
+                    <div class="col-md-12">
+
+                        Welcome!
+                        <br/>
+                        <h:commandButton styleClass="btn btn-primary" value="Logout" action="#{FormLogin.logout()}"></h:commandButton>
+
+                    </div>
+
+                </div>
+
+                <div class="row" jsf:rendered="#{not User.authenticated}">
+
+                    <div class="col-md-12">
+                        <label>Type password:</label>
+                        <h:inputSecret value="#{FormLogin.password}" styleClass="form-control"></h:inputSecret>
+                        <br/>
+                        <h:commandButton styleClass="btn btn-primary" value="Login" action="#{FormLogin.login()}"></h:commandButton>
+                    </div>
+
+                </div>
+            </h:form>
+        </div>
+
+
+    </body>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script>
+        $('#additional_message').html('Loading...');
+        $(document).ready(function () {
+            $.get("#{request.contextPath}/secured", function (result) {
+                $('#additional_message').addClass('alert-success');
+                $('#additional_message').html(result);
+            }).fail(function (result) {
+                $('#additional_message').addClass('alert-danger');
+                $('#additional_message').html('You are not logged in yet.');
+            })
+        })
+
+    </script>
+</html>
